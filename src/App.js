@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useSpring, animated } from "react-spring";
 import "./App.css";
-import { ReactComponent as CardImage } from "./card.svg";
-import { ReactComponent as CardBack } from "./card-back.svg";
 
 function App() {
     const [deck, setDeck] = useState(getDeck());
@@ -13,38 +11,16 @@ function App() {
             <p>Cards</p>
             <ShuffleButton
                 onclick={() => {
-                    // console.log("Clicked");
                     let shuffledDeck = shuffleDeck(deck);
                     shuffledDeck = setReverseOrder(shuffledDeck);
-                    // console.log("shuffledDeck", shuffledDeck);
                     setDeck(shuffledDeck);
                 }}
             />
-
             {deck && (
-                // <div className={"cardContainer"}>
-                // <div>
-                /* <div className="cardBlank">
-            <CardImage />
-          </div>
-          <div className="cardBlank">
-            <CardBack />
-          </div> */
-                // {deck.map(card => {
-                //     return (
-                //         <Card
-                //             key={`${card.rank}-${card.value}`}
-                //             data={card}
-                //         />
-                //     );
-                // })}
-                // </div>
                 <div style={{ marginLeft: 10 + "px" }}>
-                    {deck.map(card => {
-                        return <AnimatedCard data={card} />;
+                    {deck.map((card, idx) => {
+                        return <AnimatedCard data={card} index={idx} />;
                     })}
-                    {/* <AnimatedCard data={} /> */}
-                    {/* <AnimatedCard data={"club"} /> */}
                 </div>
             )}
         </div>
@@ -75,10 +51,8 @@ function getDeck() {
 }
 
 function Card({ data }) {
-    // console.log(`card${data.rank}${data.value}`);
     return (
         <div className="card">
-            {/* <div className={`cardInner`}>{`${data.value} of ${data.rank}s`}</div> */}
             <div className={`cardInner card${data.rank}${data.value}`} />
         </div>
     );
@@ -104,15 +78,16 @@ function shuffleDeck(deck) {
     return cloneDeck;
 }
 
-function AnimatedCard({ data }) {
+function AnimatedCard({ data, index }) {
     console.log("YY", data);
+    console.log("index", index);
     const [flipped, set] = useState(false);
     const { transform, opacity } = useSpring({
         // opacity: flipped ? 1 : 0,
         opacity: flipped ? 1 : 0,
         transform: `perspective(600px) rotateY(${
             flipped ? 180 : 0
-        }deg) translateX(${flipped ? -160 : 0}px)`,
+        }deg) translateX(${flipped ? -140 - data.reverseOrder * 28 : 0}px)`,
         config: { mass: 5, tension: 700, friction: 100 }
     });
     return (
